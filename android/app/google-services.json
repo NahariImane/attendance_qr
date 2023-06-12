@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "614026879471",
+    "project_id": "absence-qr",
+    "storage_bucket": "absence-qr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614026879471:android:4d5d5f8ec1a94818b9561a",
+        "android_client_info": {
+          "package_name": "com.absence.pfa_gestion_absence_qrcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614026879471-u92rvhklokhrcn3shdgoibgeup9d1tfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJq0OkP4XibUfH6ufzSqgmINdAXiL2Pbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614026879471-u92rvhklokhrcn3shdgoibgeup9d1tfm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
