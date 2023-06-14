@@ -263,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>  AccueilProf(),
+              builder: (context) =>  Teacher(),
             ),
           );
         } else if(documentSnapshot.get('role') == "admin"){

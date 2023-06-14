@@ -17,6 +17,35 @@ class _StudentState extends State<Student> {
   var height,width;
 
   var time = DateTime.now();
+  var nom_prenom;
+
+  Future<void> getStudentName() async {
+    final student = FirebaseAuth.instance.currentUser;
+    final studentId = student?.uid;
+    final emailStudent = student?.email;
+    String nom="";
+    String prenom="";
+    var documentSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(studentId)
+        .get();
+    if (documentSnapshot.exists) {
+      if (documentSnapshot.get('email') == emailStudent) {
+        nom = documentSnapshot.get('nom');
+        prenom = documentSnapshot.get('prenom');
+      }
+    }
+    setState(() {
+      nom_prenom= nom+" "+ prenom;
+    });
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getStudentName();
+  }
 
 
   @override
@@ -24,8 +53,11 @@ class _StudentState extends State<Student> {
     final student = FirebaseAuth.instance.currentUser;
     final studentId = student?.uid;
     final emailStudent = student?.email;
+    //final nom_prenom = student?.displayName;
+    getStudentName();
 
-    
+
+
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -102,21 +134,54 @@ class _StudentState extends State<Student> {
                 width: 180,
                 height: 40,
                 child:
-                ElevatedButton(
-                    onPressed:(){ CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
-                    FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value){
-                    setState(() {
-                      col.add({
+                /*ElevatedButton(
+                  onPressed:(){ CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
+                  FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value){
+                    /*setState(() {
+                      col.doc(value).set({
                         'student': emailStudent,
-                  });
-                  qrstr = 'présence enregistré';
-                });
-              });},
-                    child:
-                    Text(('Scanner')),
-                    style: ElevatedButton.styleFrom(
-                     foregroundColor: Colors.white,
-                      backgroundColor: Colors.teal, // Text color
+                        'students': {'nom_prenom': nom_prenom},
+                      }, SetOptions(merge: true));
+                      qrstr = 'présence enregistré';
+                    });*/
+
+                 */
+                ElevatedButton(
+                  onPressed: () {
+                    CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
+                    FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value) {
+                      col.doc(value).get().then((docSnapshot) {
+                        if (docSnapshot.exists) {
+                          List<dynamic> students = docSnapshot.get('students') ?? [];
+
+                          // Vérifier si le nom_prenom existe déjà dans le tableau students
+                          bool isExisting = students.contains(nom_prenom);
+
+                          if (!isExisting) {
+                            // Ajouter la nouvelle valeur au tableau students
+                            students.add(nom_prenom);
+
+                            col.doc(value).update({
+                              'students': students,
+                            }).then((_) {
+                              setState(() {
+                                qrstr = 'présence enregistrée';
+                              });
+                            }).catchError((error) {
+                              print('Erreur lors de la mise à jour du document Firestore: $error');
+                            });
+                          } else {
+                            print('Le nom_prenom existe déjà dans le tableau students');
+                          }
+                        }
+                      });
+                    });
+                  },
+                  child:
+                  Text(('Scanner')),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.teal, // Text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10), // Rounded corners
                     ),
@@ -125,9 +190,9 @@ class _StudentState extends State<Student> {
                       fontWeight: FontWeight.bold, // Text weight
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Button padding
+                  ),
                 ),
-                ),
-              ),
+              )
             ],
           ),
 
@@ -141,30 +206,8 @@ class _StudentState extends State<Student> {
     CircularProgressIndicator();
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginPage(),
-      ),
-    );
-  }
-
-  /*Future <void>scanQr()async{
-    try{
-      CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
-      FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value){
-        setState(() {
-          // Ajouter a la base de donnees id de l'etudiant , prof , seance , date...
-          //autoriser l'application à utiliser l'heure et la date du device
-          col.add({
-            'student': emailStudent,
-          });
-          qrstr = 'présence enregistré';
-        });
-      });
-    }catch(e){
-      setState(() {
-        qrstr='unable to read this';
-      });
-    }
-  }*/
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),);}
 }

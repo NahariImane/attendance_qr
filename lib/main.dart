@@ -9,10 +9,19 @@ import 'package:pfa_gestion_absence_qrcode/pages/home.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/scanqr.dart';
 
 
-import 'package:firebase_core_web/firebase_core_web.dart';
+//import 'package:firebase_core_web/firebase_core_web.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/login.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/prof/accueilProf.dart';
+import 'package:pfa_gestion_absence_qrcode/pages/student.dart';
+import 'package:pfa_gestion_absence_qrcode/pages/teacher.dart';
+
+/*import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'utiles/nonweb_url_strategy.dart'
+if (dart.library.html) 'utils/web_url_strategy.dart';*/
+
+
 Future<void> main() async {
+ // configureUrl();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -41,10 +50,10 @@ class _MyAppState extends State<MyApp> {
       home: home(),
       routes: {
         '/scanPage': (context) => CreateScreen(),
-        '/accueilProf': (context) => const AccueilProf(),
+        '/Teacher': (context) => const Teacher(),
         '/filiere': (context) => const Filiere(),
         '/matiere': (context) => const Matiere(),
-        '/etudiant': (context) => const Etudiant(),
+        '/student': (context) => const Student(),
         '/professeur': (context) => const Professeur(),
       },
     );
