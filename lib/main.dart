@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
         '/Teacher': (context) => const Teacher(),
         '/filiere': (context) => const Filiere(),
         '/matiere': (context) => const Matiere(),
-        '/student': (context) => const Student(),
+        '/etudiant': (context) => const Etudiant(),
         '/professeur': (context) => const Professeur(),
       },
     );
