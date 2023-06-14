@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
+import 'package:location/location.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/scanqr.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,8 +24,64 @@ class _TeacherState extends State<Teacher> {
 
    String? value_filiere;
    String? value_niveau;
-  /*String? value_matiere;
-  String? value_salle;*/
+
+
+   LocationData? currentLocation;
+   String address = "";
+
+   @override
+   void initState() {
+     super.initState();
+     // _startLocationService();
+     _getLocation().then((value) {
+       LocationData? location = value;
+       _getAddress(location?.latitude, location?.longitude)
+           .then((value) {
+         setState(() {
+           currentLocation = location;
+           address = value;
+         });
+       });
+     });
+   }
+
+   //*********************************************
+
+   Future<LocationData?> _getLocation() async {
+     Location location = Location();
+     LocationData _locationData;
+
+     bool _serviceEnabled;
+     PermissionStatus _permissionGranted;
+
+     _serviceEnabled = await location.serviceEnabled();
+     if (!_serviceEnabled) {
+       _serviceEnabled = await location.requestService();
+       if (!_serviceEnabled) {
+         return null;
+       }
+     }
+
+     _permissionGranted = await location.hasPermission();
+     if (_permissionGranted == PermissionStatus.denied) {
+       _permissionGranted = await location.requestPermission();
+       if (_permissionGranted != PermissionStatus.granted) {
+         return null;
+       }
+     }
+
+     _locationData = await location.getLocation();
+     return _locationData;
+   }
+
+   Future<String> _getAddress(double? lat, double? lang) async {
+     if (lat == null || lang == null) return "";
+     GeoCode geoCode = GeoCode();
+     Address address =
+     await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
+     return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+   }
+   //*********************************************
 
 
  
@@ -209,10 +267,6 @@ class _TeacherState extends State<Teacher> {
                 width: 180,
                 height: 40,
                 child: ElevatedButton(
-                  /*onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>CreateScreen()));
-                    print('creating qr code');
-                  },*/
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -220,6 +274,8 @@ class _TeacherState extends State<Teacher> {
                       arguments: {
                         'selectedFiliere': selectedFiliere,
                         'selectedNiveau': selectedNiveau,
+                        'currentLocation': currentLocation,
+                        'address': address,
                       },
                     );
                   },
