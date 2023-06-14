@@ -35,7 +35,7 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   barcode_widget: ^2.0.1
   email_validator: ^2.1.17
-
+  location: ^4.4.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -44,6 +44,8 @@ dependencies:
   google_fonts: ^4.0.3
   cloud_firestore: ^4.5.0
   firebase_auth: ^4.4.0
+  geocode: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:

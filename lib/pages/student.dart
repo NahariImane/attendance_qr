@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocode/geocode.dart';
+import 'package:location/location.dart';
 
 import 'login.dart';
 
@@ -13,11 +15,66 @@ class Student extends StatefulWidget {
 }
 
 class _StudentState extends State<Student> {
-  var qrstr = "";
   var height,width;
 
   var time = DateTime.now();
   var nom_prenom;
+
+  LocationData? currentLocation;
+  String address = "";
+
+  //********************Location added*************************
+  @override
+  void initState() {
+    super.initState();
+    getStudentName();
+    _getLocation().then((value) {
+      LocationData? location = value;
+      _getAddress(location?.latitude, location?.longitude)
+          .then((value) {
+        setState(() {
+          currentLocation = location;
+          address = value;
+        });
+      });
+    });
+  }
+
+  Future<LocationData?> _getLocation() async {
+    Location location = Location();
+    LocationData _locationData;
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    return _locationData;
+  }
+
+  Future<String> _getAddress(double? lat, double? lang) async {
+    if (lat == null || lang == null) return "";
+    GeoCode geoCode = GeoCode();
+    Address address =
+    await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
+    return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+  }
+  //*********************************************
 
   Future<void> getStudentName() async {
     final student = FirebaseAuth.instance.currentUser;
@@ -41,11 +98,6 @@ class _StudentState extends State<Student> {
 
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getStudentName();
-  }
 
 
   @override
@@ -134,18 +186,6 @@ class _StudentState extends State<Student> {
                 width: 180,
                 height: 40,
                 child:
-                /*ElevatedButton(
-                  onPressed:(){ CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
-                  FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value){
-                    /*setState(() {
-                      col.doc(value).set({
-                        'student': emailStudent,
-                        'students': {'nom_prenom': nom_prenom},
-                      }, SetOptions(merge: true));
-                      qrstr = 'présence enregistré';
-                    });*/
-
-                 */
                 ElevatedButton(
                   onPressed: () {
                     CollectionReference col = FirebaseFirestore.instance.collection('qrcode');
@@ -153,25 +193,26 @@ class _StudentState extends State<Student> {
                       col.doc(value).get().then((docSnapshot) {
                         if (docSnapshot.exists) {
                           List<dynamic> students = docSnapshot.get('students') ?? [];
+                          String teacherAddress = docSnapshot.get('address') ?? '';
 
                           // Vérifier si le nom_prenom existe déjà dans le tableau students
                           bool isExisting = students.contains(nom_prenom);
 
                           if (!isExisting) {
-                            // Ajouter la nouvelle valeur au tableau students
-                            students.add(nom_prenom);
+                            // if the teacher s address and student address are the same then the student presence is
+                            // approved (they are in the same class) so the student is added to the DB
+                            if(address == teacherAddress) {
+                                // Ajouter la nouvelle valeur au tableau students
+                                students.add(nom_prenom);
 
-                            col.doc(value).update({
-                              'students': students,
-                            }).then((_) {
-                              setState(() {
-                                qrstr = 'présence enregistrée';
-                              });
-                            }).catchError((error) {
-                              print('Erreur lors de la mise à jour du document Firestore: $error');
-                            });
-                          } else {
-                            print('Le nom_prenom existe déjà dans le tableau students');
+                                col.doc(value).update({
+                                  'students': students,
+                                }).catchError((error) {
+                                  print('Erreur lors de la mise à jour du document Firestore: $error');
+                                });
+                              } else {
+                                print('Le nom_prenom existe déjà dans le tableau students');
+                              }
                           }
                         }
                       });
