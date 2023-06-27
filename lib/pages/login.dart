@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pfa_gestion_absence_qrcode/pages/prof/accueilProf.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/student.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/teacher.dart';
 
 import '../utils.dart';
-import 'admin.dart';
 import 'admin/accueil.dart';
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,10 +16,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isObscure3 = true;
-  bool visible = false;
+
   final _formkey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
+
+
 
   final _auth = FirebaseAuth.instance;
   @override
@@ -31,34 +32,37 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
+          children: [
             Container(
-              color: Colors.white,
               width: MediaQuery.of(context).size.width,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(alignment: Alignment.topLeft,child: Image.asset('assets/images/circle.png'),),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Image.asset('assets/images/circle.png'),
+                    ),
                     Container(
                       child: Text(
                         'Bienvenue !',
                         textAlign: TextAlign.center,
-                        style: SafeGoogleFont (
+                        style: SafeGoogleFont(
                           'Nunito',
-                          fontSize: 20*ffem,
+                          fontSize: 22 * ffem,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 1.2*fem,
-                          color: Color(0xff178ca4),
+                          letterSpacing: 1.2 * fem,
+                          color: HexColor('#ff178ca4'),
                         ),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(1.65*fem, 0*fem, 0*fem, 5*fem),
-                      width: 226.65*fem,
-                      height: 250*fem,
+                      // margin: EdgeInsets.fromLTRB(
+                      //     1 * fem, 0 * fem, 0 * fem, 2 * fem),
+                      width: 226.65 * fem,
+                      height: 250 * fem,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(13*fem),
+                        borderRadius: BorderRadius.circular(13 * fem),
                         child: Image.asset(
                           'assets/images/login.png',
                           fit: BoxFit.cover,
@@ -75,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
               height: MediaQuery.of(context).size.height * 0.50,
               child: Center(
                 child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 0,horizontal: 20),
+                  margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                   child: Form(
                     key: _formkey,
                     child: Column(
@@ -88,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                             filled: true,
                             fillColor: Colors.grey[200],
                             hintText: 'Email',
+                            hintStyle: TextStyle(color: Colors.grey.shade600),
                             enabled: true,
                             contentPadding: const EdgeInsets.only(
                                 left: 14.0, bottom: 8.0, top: 8.0),
@@ -102,12 +107,22 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator: (value) {
                             if (value!.length == 0) {
-                              return "Email cannot be empty";
+                              return "Saisir votre email";
                             }
                             if (!RegExp(
-                                "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                                 .hasMatch(value)) {
-                              return ("Please enter a valid email");
+                              // return ("Entrez un email valide!");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: AwesomeSnackbarContent(
+                                    title: "Alert",
+                                    message: "Entrez un email valide!",
+                                    contentType: ContentType.warning,
+                                  ),
+                                  backgroundColor: Colors.transparent, // Set the background color here
+                                ),
+                              );
                             } else {
                               return null;
                             }
@@ -135,8 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                                 }),
                             filled: true,
                             fillColor: Colors.grey[200],
-                            hintText: 'Password',
+                            hintText: 'Mot de passe',
                             enabled: true,
+                            hintStyle: TextStyle(color: Colors.grey.shade600),
                             contentPadding: const EdgeInsets.only(
                                 left: 14.0, bottom: 8.0, top: 15.0),
                             focusedBorder: OutlineInputBorder(
@@ -151,10 +167,20 @@ class _LoginPageState extends State<LoginPage> {
                           validator: (value) {
                             RegExp regex = new RegExp(r'^.{6,}$');
                             if (value!.isEmpty) {
-                              return "Password cannot be empty!";
+                              return "Saisir le mot de passe!";
                             }
                             if (!regex.hasMatch(value)) {
-                              return ("Password must have min 6 characters.");
+                              // return ("Minimum 6 caracteres.");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: AwesomeSnackbarContent(
+                                    title: "Alert",
+                                    message: "Minimum 6 caracteres.",
+                                    contentType: ContentType.warning,
+                                  ),
+                                    backgroundColor: Colors.transparent, // Set the background color here
+                                ),
+                              );
                             } else {
                               return null;
                             }
@@ -168,37 +194,13 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 20,
                         ),
-                        // MaterialButton(
-                        //   shape: RoundedRectangleBorder(
-                        //       borderRadius:
-                        //       BorderRadius.all(Radius.circular(20.0))),
-                        //   elevation: 5.0,
-                        //   height: 40,
-                        //   onPressed: () {
-                        //     setState(() {
-                        //       visible = true;
-                        //     });
-                        //     signIn(
-                        //         emailController.text, passwordController.text);
-                        //   },
-                        //   child: Text(
-                        //     "Login",
-                        //     style: TextStyle(
-                        //       fontSize: 20,
-                        //     ),
-                        //   ),
-                        //   color: Colors.white,
-                        // ),
                         TextButton(
                           // buttonCFu (4:168)
                           onPressed: () {
-                            setState(() {
-                              visible = true;
-                            });
                             signIn(
                                 emailController.text, passwordController.text);
                           },
-                          style: TextButton.styleFrom (
+                          style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
@@ -206,20 +208,20 @@ class _LoginPageState extends State<LoginPage> {
                             // height: 60*fem,
                             width: 200,
                             height: 50,
-                            decoration: BoxDecoration (
+                            decoration: BoxDecoration(
                               color: Color(0xff178ca4),
-                              borderRadius: BorderRadius.circular(20*fem),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
                               child: Center(
                                 child: Text(
                                   'Connexion',
                                   textAlign: TextAlign.center,
-                                  style: SafeGoogleFont (
+                                  style: SafeGoogleFont(
                                     'Work Sans',
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.08*fem,
+                                    letterSpacing: 1.08 * fem,
                                     color: Color(0xffffffff),
                                   ),
                                 ),
@@ -230,15 +232,6 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Visibility(
-                            maintainSize: true,
-                            maintainAnimation: true,
-                            maintainState: true,
-                            visible: visible,
-                            child: Container(
-                                child: CircularProgressIndicator(
-                                  color: Colors.black12,
-                                ))),
                       ],
                     ),
                   ),
@@ -263,22 +256,21 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>  Teacher(),
+              builder: (context) => Teacher(),
             ),
           );
-        } else if(documentSnapshot.get('role') == "admin"){
+        } else if (documentSnapshot.get('role') == "admin") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>  Accueil(),
+              builder: (context) => Accueil(),
             ),
           );
-        }
-        else{
+        } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>  Student(),
+                builder: (context) => Student(),
             ),
           );
         }
@@ -292,21 +284,40 @@ class _LoginPageState extends State<LoginPage> {
     if (_formkey.currentState!.validate()) {
       try {
         UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
         route();
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AwesomeSnackbarContent(
+                title: "Erreur",
+                message: "Utilisateur introuvable",
+                contentType: ContentType.failure,
+              ),
+              backgroundColor: Colors.transparent,  // Set the background color here
+            ),
+          );
           print('No user found for that email.');
+          print(e.code);
         } else if (e.code == 'wrong-password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: AwesomeSnackbarContent(
+                title: "Erreur",
+                message: "Mot de passe incorrecte",
+                contentType: ContentType.failure,
+              ),
+                backgroundColor: Colors.transparent, // Set the background color here
+            ),
+          );
           print('Wrong password provided for that user.');
         }
+
       }
     }
   }
 }
-
-
-

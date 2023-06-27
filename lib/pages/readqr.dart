@@ -32,7 +32,7 @@ class _ScanScreenState extends State<ScanScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(qrstr,style: TextStyle(color: Colors.blue,fontSize: 30),),
+            Text(qrstr,style: TextStyle( color: Theme.of(context).primaryColor,fontSize: 30),),
             ElevatedButton(onPressed: scanQr, child:
             Text(('Scanner'))),
             SizedBox(height: width,)
@@ -45,7 +45,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Future <void>scanQr()async{
     try{
-      FlutterBarcodeScanner.scanBarcode('#2A99CF', 'cancel', true, ScanMode.QR).then((value){
+      FlutterBarcodeScanner.scanBarcode('${Theme.of(context).hintColor},', 'cancel', true, ScanMode.QR).then((value){
         setState(() {
           // Ajouter a la base de donnees id de l'etudiant , prof , seance , date...
           //autoriser l'application à utiliser l'heure et la date du device
