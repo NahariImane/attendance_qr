@@ -1,4 +1,3 @@
-
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +13,6 @@ class _CreateScreenState extends State<CreateScreen> {
   var time = DateTime.now();
   var date, heure;
 
-  static List<String> dataList = [];
   late CollectionReference col;
   String documentId = '';
   String selectedFiliere = '';
@@ -23,21 +21,25 @@ class _CreateScreenState extends State<CreateScreen> {
 
   LocationData? currentLocation;
   String address = "";
+  List<String> students = [];
 
   @override
   void initState() {
     super.initState();
     date = '${time.day}/${time.month}/${time.year}';
-    heure = '${time.hour}:${time.minute}';
-    dataList = [date, heure];
     col = FirebaseFirestore.instance.collection('qrcode');
   }
 
+
+  // The generateDocument method is only called if the documentId is empty.
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    generateDocument(); // Call the method here
+    if (documentId.isEmpty) {
+      generateDocument();
+    }
   }
+
 
   Future<String> addDocument() async {
     DocumentReference docRef = await col.add({
@@ -46,6 +48,7 @@ class _CreateScreenState extends State<CreateScreen> {
       'niveau': selectedNiveau,
       'prof': emailprof,
       'location': address,
+      'students': students,
     });
     return docRef.id;
   }
@@ -64,6 +67,7 @@ class _CreateScreenState extends State<CreateScreen> {
     documentId = await addDocument(); // Appeler addDocument pour récupérer le documentId
     setState(() {}); // Mettre à jour l'état pour afficher le documentId
     print('Document ID: $documentId');
+    print('Teacher Location ${address}');
   }
 
   @override
@@ -79,7 +83,7 @@ class _CreateScreenState extends State<CreateScreen> {
           BarcodeWidget(
             data: documentId,
             barcode: Barcode.qrCode(),
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             height: 250,
             width: 250,
           ),

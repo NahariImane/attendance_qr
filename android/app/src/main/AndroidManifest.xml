@@ -1,12 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.absence.pfa_gestion_absence_qrcode">
-   <application
-        android:label="pfa_gestion_absence_qrcode"
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <application
+        android:label="abScan"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
-            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-            <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+        android:requestLegacyExternalStorage="true">
+        android:icon="@mipmap/launcher_icon"
         <activity
             android:name=".MainActivity"
             android:exported="true"
