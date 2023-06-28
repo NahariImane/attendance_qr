@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -22,7 +24,7 @@ class _StudentState extends State<Student> {
   var height, width;
   String formattedTime = DateFormat('kk:mm').format(DateTime.now());
   String hour = DateFormat('a').format(DateTime.now());
-  String date ="";
+  String date = "";
   late Timer _timer;
 
   var time = DateTime.now();
@@ -58,7 +60,8 @@ class _StudentState extends State<Student> {
   Future<void> _update() async {
     if (mounted) {
       await initializeDateFormatting('fr', "");
-      String formattedDate = DateFormat('EEEE d MMMM yyyy', 'fr').format(DateTime.now());
+      String formattedDate =
+          DateFormat('EEEE d MMMM yyyy', 'fr').format(DateTime.now());
 
       setState(() {
         formattedTime = DateFormat('kk:mm').format(DateTime.now());
@@ -67,8 +70,6 @@ class _StudentState extends State<Student> {
       });
     }
   }
-
-
 
   Future<LocationData?> _getLocation() async {
     Location location = Location();
@@ -119,8 +120,8 @@ class _StudentState extends State<Student> {
         .get();
     if (documentSnapshot.exists) {
       if (documentSnapshot.get('email') == emailStudent) {
-          nom = documentSnapshot.get('nom');
-          prenom = documentSnapshot.get('prenom');
+        nom = documentSnapshot.get('nom');
+        prenom = documentSnapshot.get('prenom');
         setState(() {
           filiere = documentSnapshot.get('filiere');
           niveau = documentSnapshot.get('niveau');
@@ -160,7 +161,7 @@ class _StudentState extends State<Student> {
                   end: Alignment.bottomRight,
                   colors: <Color>[
                 Theme.of(context).primaryColor,
-                    Theme.of(context).hintColor.withOpacity(0.8),
+                Theme.of(context).hintColor.withOpacity(0.8),
               ])),
         ),
         actions: [
@@ -220,13 +221,17 @@ class _StudentState extends State<Student> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor,
-                    ), ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 12,
                   ),
                   Text(
                     "$date - $formattedTime",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,color: Colors.grey.shade600),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade600),
                   ),
                   const SizedBox(
                     height: 10,
@@ -249,18 +254,39 @@ class _StudentState extends State<Student> {
                                         ListTile(
                                           contentPadding: EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 10),
-                                          leading: Icon(Icons.my_location,color: Theme.of(context).primaryColor,),
-                                          title: Text("Localisation",style: TextStyle(fontWeight: FontWeight.w600)),
-                                          subtitle: Text(address != "Throttled! See geocode.xyz/pricing, null, Throttled! See geocode.xyz/pricing"?address:"Erreur! Essayer de vous reconnecter."),
+                                          leading: Icon(
+                                            Icons.my_location,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          title: Text("Localisation",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600)),
+                                          subtitle: Text(address !=
+                                                  "Throttled! See geocode.xyz/pricing, null, Throttled! See geocode.xyz/pricing"
+                                              ? address
+                                              : "Erreur! Essayer de vous reconnecter."),
                                         ),
                                         ListTile(
-                                          leading: Icon(Icons.email,color: Theme.of(context).primaryColor,),
-                                          title: Text("Email",style: TextStyle(fontWeight: FontWeight.w600)),
+                                          leading: Icon(
+                                            Icons.email,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          title: Text("Email",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600)),
                                           subtitle: Text(emailStudent ?? ' '),
                                         ),
                                         ListTile(
-                                          leading: Icon(Icons.grade,color: Theme.of(context).primaryColor,),
-                                          title: Text("Niveau",style: TextStyle(fontWeight: FontWeight.w600)),
+                                          leading: Icon(
+                                            Icons.grade,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                          title: Text("Niveau",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600)),
                                           subtitle: Text("$filiere $niveau"),
                                         ),
                                       ],
@@ -286,10 +312,11 @@ class _StudentState extends State<Student> {
                             ElevatedButton(
                               onPressed: () {
                                 print('Student Location ${address}');
-                                CollectionReference col =
-                                FirebaseFirestore.instance.collection('qrcode');
+                                CollectionReference col = FirebaseFirestore
+                                    .instance
+                                    .collection('qrcode');
                                 FlutterBarcodeScanner.scanBarcode(
-                                    '#2A99CF', 'cancel', true, ScanMode.QR)
+                                        '#2A99CF', 'cancel', true, ScanMode.QR)
                                     .then((value) {
                                   col.doc(value).get().then((docSnapshot) {
                                     if (docSnapshot.exists) {
@@ -299,7 +326,8 @@ class _StudentState extends State<Student> {
                                           docSnapshot.get('location') ?? '';
 
                                       // Vérifier si le nom_prenom existe déjà dans le tableau students
-                                      bool isExisting = students.contains(nom_prenom);
+                                      bool isExisting =
+                                          students.contains(nom_prenom);
 
                                       if (!isExisting) {
                                         // if the teacher s address and student address are the same then the student presence is
@@ -307,13 +335,45 @@ class _StudentState extends State<Student> {
                                         if (address == teacherAddress) {
                                           // Ajouter la nouvelle valeur au tableau students
                                           students.add(nom_prenom);
-                                          col.doc(value).update({
-                                            'students': students,
-                                            'studentLocation': address,
-                                          }).catchError((error) {
-                                            print(
-                                                'Erreur lors de la mise à jour du document Firestore: $error');
-                                          });
+                                          col
+                                              .doc(value)
+                                              .update({
+                                                'students': students,
+                                                'studentLocation': address,
+                                              })
+                                              .then((value) =>
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content:
+                                                          AwesomeSnackbarContent(
+                                                        title: "Alert",
+                                                        message:
+                                                            "Vous êtes marqué présent.",
+                                                        contentType:
+                                                            ContentType.success,
+                                                      ),
+                                                      backgroundColor: Colors
+                                                          .transparent, // Set the background color here
+                                                    ),
+                                                  ))
+                                              .catchError((error) {
+                                                print(
+                                                    'Erreur lors de la mise à jour du document Firestore: $error');
+                                              });
+                                        } else if (address != teacherAddress) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: AwesomeSnackbarContent(
+                                                title: "Alert",
+                                                message:
+                                                    "Votre êtes marqué absent.",
+                                                contentType:
+                                                    ContentType.failure,
+                                              ),
+                                            ),
+                                          );
                                         } else {
                                           print(
                                               'Le nom_prenom existe déjà dans le tableau students');
@@ -326,10 +386,10 @@ class _StudentState extends State<Student> {
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor:
-                                Theme.of(context).hintColor, // Text color
+                                    Theme.of(context).hintColor, // Text color
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8), // Rounded corners
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Rounded corners
                                 ),
                                 textStyle: const TextStyle(
                                   fontSize: 16, // Text size
@@ -337,7 +397,8 @@ class _StudentState extends State<Student> {
                                   letterSpacing: 1,
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 40, vertical: 14), // Button padding
+                                    horizontal: 40,
+                                    vertical: 14), // Button padding
                               ),
                               child: Text(('Scanner')),
                             ),
