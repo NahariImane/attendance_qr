@@ -55,7 +55,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   pdf: ^3.10.4
   hexcolor: ^3.0.1
-
+  slide_to_confirm: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
