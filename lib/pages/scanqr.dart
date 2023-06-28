@@ -74,7 +74,21 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Creating QR code'),
+        title: const Text(
+            'Creating QR code',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).hintColor.withOpacity(0.8),
+                  ])),
+        ),
+
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

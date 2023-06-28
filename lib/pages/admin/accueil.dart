@@ -1,4 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pfa_gestion_absence_qrcode/pages/admin/ajouterMatiere.dart';
+import 'package:slide_to_confirm/slide_to_confirm.dart';
+import '../header_widget.dart';
+import '../login.dart';
+import 'ajouterEtudiant.dart';
+import 'ajouterFiliere.dart';
+import 'ajouterProfesseur.dart';
+
 
 class Accueil extends StatefulWidget {
   const Accueil({Key? key}) : super(key: key);
@@ -11,120 +20,255 @@ class _AccueilState extends State<Accueil> {
   @override
   Widget build(BuildContext context) {
 
-    var time = DateTime.now();
-
+    debugShowCheckedModeBanner: false;
+    bool isFinished = false;
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: 250,
-            width: double.infinity,
-            color: Colors.teal[300],
-            child:  Column(
-              children: [
-                SizedBox(height: 50.0),
-                const Text(
-                  'Administrateur',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
-                    fontSize: 28.0,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                const Icon(
-                    Icons.watch_later_outlined,
-                    size: 60.0,
-                    color: Colors.white,
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                    '${time.hour} : ${time.minute}    -    ${time.day} / ${time.month} / ${time.year}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                      color: Colors.white,
-                  ),
-                ),
-              ],
+      appBar: AppBar(
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: Text(
+            "Espace administrateur",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        elevation: 0.5,
+        iconTheme: const IconThemeData(color: Colors.white),
+        automaticallyImplyLeading: false, // Remove the back button
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).hintColor.withOpacity(0.8),
+                  ])),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            child: IconButton(
+              onPressed: () {
+                logout(context);
+              },
+              icon: const Icon(
+                Icons.logout,
+              ),
+              color: Colors.white,
             ),
-          ),
-
-          SizedBox(height: 25.0),
-
-          const Text(
-              'Ajouter',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
-          ),
-          const SizedBox(height: 25.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/filiere');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal[300], // Background color
-                  ),
-                  child: Text('Filiere'),
-                ),
-              ),
-              Container(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/matiere');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal[300], // Background color
-                  ),
-                  child: Text('Matiere'),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/professeur');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal[300], // Background color
-                  ),
-                  child: Text('Professeur'),
-                ),
-              ),
-              Container(
-                width: 100,
-                height: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/etudiant');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.teal[300], // Background color
-                  ),
-                  child: Text('Etudiant'),
-                ),
-              ),
-            ],
-          ),
+          )
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: 150,
+              child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      GestureDetector(
+                        child: Stack(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                border: Border.all(
+                                    width: 5, color: Colors.white),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 20,
+                                    offset: const Offset(5, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.grey.shade300,
+                                size: 80.0,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(80, 80, 0, 0),
+                              child: Icon(
+                                Icons.add_circle,
+                                color: Colors.grey.shade700,
+                                size: 25.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+//*************************************************************************************************
+                      SizedBox(height: 40,),
+                      ConfirmationSlider(
+                        height: 55,
+                        width: 300,
+                        backgroundColor: Color(0xFFF5F5F5),
+                        foregroundColor: Color(0XFF136D7F),
+                        iconColor: Color(0xff136D7F),
+                        text: ' Ajouter filière',
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 18,
+                        ),
+                        onConfirmation: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>Filiere(),),),
+                      ),
+                      SizedBox(height: 15,),
+                      ConfirmationSlider(
+                        height: 55,
+                        width: 300,
+                        backgroundColor: Color(0xFFF5F5F5),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
+                        text: ' Ajouter matière',
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 18,
+                        ),
+                        onConfirmation: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>Matiere(),),),
+                      ),
+                      SizedBox(height: 15,),
+                      ConfirmationSlider(
+                        height: 55,
+                        width: 300,
+                        backgroundColor: Color(0xFFF5F5F5),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
+                        text: ' Ajouter étudiant',
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 18,
+                        ),
+                        onConfirmation: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>Etudiant(),),),
+                      ),
+                      SizedBox(height: 15,),
+                      ConfirmationSlider(
+                        height: 55,
+                        width: 300,
+                        backgroundColor: Color(0xFFF5F5F5),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
+                        text: ' Ajouter professeur',
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 18,
+                        ),
+                        onConfirmation: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>Professeur(),),),
+                      )
+
+//=================================================================================================
+                      //const SizedBox(height: 10,),
+                      /*Column(
+                        children: [
+                          SizedBox(height: 60.0),
+
+                          const Text(
+                            'Ajouter',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          const SizedBox(height: 60.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/filiere');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Filiere'),
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 100,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/matiere');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Matiere'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 60.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/professeur');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Professeur'),
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/registration');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Etudiant'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )*/
+
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Future<void> logout(BuildContext context) async {
+    CircularProgressIndicator();
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(),
       ),
     );
   }

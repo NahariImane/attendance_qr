@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../header_widget.dart';
+import '../login.dart';
+import '../theme_helper.dart';
 
 class Professeur extends StatefulWidget {
   const Professeur({Key? key}) : super(key: key);
@@ -75,139 +76,269 @@ class _ProfesseurState extends State<Professeur> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Ajouter Professeur'),
-          backgroundColor: Colors.teal[300],
+      appBar: AppBar(
+        title: const Text(
+            'Ajouter Professeur',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        body:  Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                 TextFormField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    labelText: 'Nom',
-                  ),
-                   controller: _nomController,
-                   validator: (value) {
-                     if (value!.isEmpty) {
-                       return 'Champ requis';
-                     }
-                     return null;
-                   },
-                ),
-                SizedBox(height: 5.0),
-                 TextFormField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    labelText: 'Prénom',
-                  ),
-                  controller: _prenomController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Champ requis';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 5.0),
-                 TextFormField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    labelText: 'Email',
-                  ),
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Champ requis';
-                    }
-                    if (!EmailValidator.validate(value)) {
-                      return 'Adresse email invalide';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 5.0),
-                 TextFormField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    labelText: 'Mot de passe',
-                  ),
-                  controller: _passwordController,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Champ requis';
-                    }
-                    if (value.length < 6) {
-                      return 'Le mot de passe doit contenir au moins 6 caractères';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 5.0),
-                 TextFormField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    labelText: 'Confirmez le mot de passe',
-                  ),
-                  controller: _confirmPasswordController,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Champ requis';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Les mots de passe ne correspondent pas';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 40.0),
-
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _submitForm,
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.teal[300], // Background color
-                    ),
-                    child:  Text('Ajouter'),
-                  ),
-                ),
-                if(_errorMessage.isNotEmpty)
-                  Text(
-                    _errorMessage,
-                    style: TextStyle(color: Colors.red),
-                  ),
-              ],
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).hintColor.withOpacity(0.8),
+                  ])),
+        ),
+      ),
+      body:   SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: 150,
+              child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
             ),
-          ),
-        ));
+            Container(
+              margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(
+                                      width: 5, color: Colors.white),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 20,
+                                      offset: const Offset(5, 5),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.grey.shade300,
+                                  size: 80.0,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.fromLTRB(80, 80, 0, 0),
+                                child: Icon(
+                                  Icons.add_circle,
+                                  color: Colors.grey.shade700,
+                                  size: 25.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+//*************************************************************************************************
+
+                        const SizedBox(height: 10,),
+                        Container(
+                          //decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                          child: TextFormField(
+                            decoration:  InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              hintText: 'Nom',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            controller: _nomController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Champ requis';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+
+                        const SizedBox(height: 5,),
+
+
+                        Container(
+                          child: TextFormField(
+                            decoration:  InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              hintText: 'Prénom',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            controller: _prenomController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Champ requis';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+
+                        const SizedBox(height: 5.0),
+
+
+                        Container(
+                          //decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                          child: TextFormField(
+                            decoration:  InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              hintText: 'Entrez le Email',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Champ requis';
+                              }
+                              if (!EmailValidator.validate(value)) {
+                                return 'Adresse email invalide';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+
+                        const SizedBox(height: 5.0),
+
+
+                        Container(
+                          //decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                          child: TextFormField(
+                            obscureText: true,
+                            decoration:  InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              hintText: 'Entrez le mot de passe',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            controller: _passwordController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Champ requis';
+                              }
+                              if (value.length < 6) {
+                                return 'Le mot de passe doit contenir au moins 6 caractères';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+
+                        const SizedBox(height: 5.0),
+
+
+                        Container(
+                          //decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                          child: TextFormField(
+                            obscureText: true,
+                            decoration:  InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+                              hintText: 'Confirmez le mot de passe',
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            controller: _confirmPasswordController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Champ requis';
+                              }
+                              if (value != _passwordController.text) {
+                                return 'Les mots de passe ne correspondent pas';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height: 20.0),
+
+
+                        Container(
+                          decoration: ThemeHelper().buttonBoxDecoration(context),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                              minimumSize: MaterialStateProperty.all(Size(50, 50)),
+                              backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                              shadowColor: MaterialStateProperty.all(Colors.transparent),
+                            ),
+
+                            onPressed: _submitForm,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                              child: Text(
+                                "Ajouter".toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        if(_errorMessage.isNotEmpty)
+                          Text(
+                            _errorMessage,
+                            style: TextStyle(color: Colors.red),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Future<void> logout(BuildContext context) async {
+    CircularProgressIndicator();
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(),
+      ),
+    );
   }
 }
