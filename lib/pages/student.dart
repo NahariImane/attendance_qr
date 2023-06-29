@@ -324,60 +324,83 @@ class _StudentState extends State<Student> {
                                           docSnapshot.get('students') ?? [];
                                       String teacherAddress =
                                           docSnapshot.get('location') ?? '';
+                                      String filiereQr = docSnapshot.get('filiere') ?? '';
+                                      String niveauQr = docSnapshot.get('niveau') ?? '';
 
-                                      // Vérifier si le nom_prenom existe déjà dans le tableau students
-                                      bool isExisting =
-                                          students.contains(nom_prenom);
 
-                                      if (!isExisting) {
-                                        // if the teacher s address and student address are the same then the student presence is
-                                        // approved (they are in the same class) so the student is added to the DB
-                                        if (address == teacherAddress) {
-                                          // Ajouter la nouvelle valeur au tableau students
-                                          students.add(nom_prenom);
-                                          col
-                                              .doc(value)
-                                              .update({
-                                                'students': students,
-                                                'studentLocation': address,
-                                              })
-                                              .then((value) =>
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content:
-                                                          AwesomeSnackbarContent(
-                                                        title: "Alert",
-                                                        message:
-                                                            "Vous êtes marqué présent.",
-                                                        contentType:
-                                                            ContentType.success,
-                                                      ),
-                                                      backgroundColor: Colors
-                                                          .transparent, // Set the background color here
+                                      // Vérifier si l'etudiant appartient a la filiere et le niveau que le prof enseigne
+                                      if(filiere == filiereQr && niveau == niveauQr) {
+                                        // Vérifier si le nom_prenom existe déjà dans le tableau students
+                                        bool isExisting =
+                                        students.contains(nom_prenom);
+                                        if (!isExisting) {
+                                          // if the teacher s address and student address are the same then the student presence is
+                                          // approved (they are in the same class) so the student is added to the DB
+                                          if (address == teacherAddress) {
+                                            // Ajouter la nouvelle valeur au tableau students
+                                            students.add(nom_prenom);
+                                            col
+                                                .doc(value)
+                                                .update({
+                                              'students': students,
+                                              'studentLocation': address,
+                                            })
+                                                .then((value) =>
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content:
+                                                    AwesomeSnackbarContent(
+                                                      title: "Alert",
+                                                      message:
+                                                      "Vous êtes marqué présent.",
+                                                      contentType:
+                                                      ContentType.success,
                                                     ),
-                                                  ))
-                                              .catchError((error) {
-                                                print(
-                                                    'Erreur lors de la mise à jour du document Firestore: $error');
-                                              });
-                                        } else if (address != teacherAddress) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: AwesomeSnackbarContent(
-                                                title: "Alert",
-                                                message:
-                                                    "Votre êtes marqué absent.",
-                                                contentType:
-                                                    ContentType.failure,
+                                                    backgroundColor: Colors
+                                                        .transparent, // Set the background color here
+                                                  ),
+                                                ))
+                                                .catchError((error) {
+                                              print(
+                                                  'Erreur lors de la mise à jour du document Firestore: $error');
+                                            });
+                                          } else
+                                          if (address != teacherAddress) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: AwesomeSnackbarContent(
+                                                  title: "Alert",
+                                                  message:
+                                                  "Votre êtes marqué absent.",
+                                                  contentType:
+                                                  ContentType.failure,
+                                                ),
+                                                backgroundColor: Colors
+                                                    .transparent,
                                               ),
-                                            ),
-                                          );
-                                        } else {
-                                          print(
-                                              'Le nom_prenom existe déjà dans le tableau students');
+                                            );
+                                          } else {
+                                            print(
+                                                'Le nom_prenom existe déjà dans le tableau students');
+                                          }
                                         }
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: AwesomeSnackbarContent(
+                                              title: "Alert",
+                                              message:
+                                              "Vous n'appartenez pas à cette filière.",
+                                              contentType:
+                                              ContentType.failure,
+                                            ),
+                                            backgroundColor: Colors
+                                                .transparent,
+                                          ),
+                                        );
                                       }
                                     }
                                   });
