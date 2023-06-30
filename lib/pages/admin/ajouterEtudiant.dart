@@ -90,7 +90,7 @@ class _EtudiantState extends State<Etudiant>{
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-            'Ajouter Filière',
+            'Ajouter Etudiant',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         flexibleSpace: Container(
@@ -194,7 +194,7 @@ class _EtudiantState extends State<Etudiant>{
                               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
                               errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                               focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                              hintText: 'Entrez votre nom',
+                              hintText: 'Entrez le nom',
                               hintStyle: TextStyle(color: Colors.grey),
                             ),
                             controller: _nomController,
@@ -246,7 +246,7 @@ class _EtudiantState extends State<Etudiant>{
                               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
                               errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
                               focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-                              hintText: 'Entrez le Email',
+                              hintText: "Entrez l'Email",
                               hintStyle: TextStyle(color: Colors.grey),
                             ),                            controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
