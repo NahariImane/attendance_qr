@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -324,15 +323,17 @@ class _StudentState extends State<Student> {
                                           docSnapshot.get('students') ?? [];
                                       String teacherAddress =
                                           docSnapshot.get('location') ?? '';
-                                      String filiereQr = docSnapshot.get('filiere') ?? '';
-                                      String niveauQr = docSnapshot.get('niveau') ?? '';
-
+                                      String filiereQr =
+                                          docSnapshot.get('filiere') ?? '';
+                                      String niveauQr =
+                                          docSnapshot.get('niveau') ?? '';
 
                                       // Vérifier si l'etudiant appartient a la filiere et le niveau que le prof enseigne
-                                      if(filiere == filiereQr && niveau == niveauQr) {
+                                      if (filiere == filiereQr &&
+                                          niveau == niveauQr) {
                                         // Vérifier si le nom_prenom existe déjà dans le tableau students
                                         bool isExisting =
-                                        students.contains(nom_prenom);
+                                            students.contains(nom_prenom);
                                         if (!isExisting) {
                                           // if the teacher s address and student address are the same then the student presence is
                                           // approved (they are in the same class) so the student is added to the DB
@@ -342,43 +343,45 @@ class _StudentState extends State<Student> {
                                             col
                                                 .doc(value)
                                                 .update({
-                                              'students': students,
-                                              'studentLocation': address,
-                                            })
+                                                  'students': students,
+                                                  'studentLocation': address,
+                                                })
                                                 .then((value) =>
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content:
-                                                    AwesomeSnackbarContent(
-                                                      title: "Alert",
-                                                      message:
-                                                      "Vous êtes marqué présent.",
-                                                      contentType:
-                                                      ContentType.success,
-                                                    ),
-                                                    backgroundColor: Colors
-                                                        .transparent, // Set the background color here
-                                                  ),
-                                                ))
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content:
+                                                            AwesomeSnackbarContent(
+                                                          title: "Alert",
+                                                          message:
+                                                              "Vous êtes marqué présent.",
+                                                          contentType:
+                                                              ContentType
+                                                                  .success,
+                                                        ),
+                                                        backgroundColor: Colors
+                                                            .transparent, // Set the background color here
+                                                      ),
+                                                    ))
                                                 .catchError((error) {
-                                              print(
-                                                  'Erreur lors de la mise à jour du document Firestore: $error');
-                                            });
-                                          } else
-                                          if (address != teacherAddress) {
+                                                  print(
+                                                      'Erreur lors de la mise à jour du document Firestore: $error');
+                                                });
+                                          } else if (address !=
+                                              teacherAddress) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: AwesomeSnackbarContent(
                                                   title: "Alert",
                                                   message:
-                                                  "Votre êtes marqué absent.",
+                                                      "Votre êtes marqué absent.",
                                                   contentType:
-                                                  ContentType.failure,
+                                                      ContentType.failure,
                                                 ),
-                                                backgroundColor: Colors
-                                                    .transparent,
+                                                backgroundColor:
+                                                    Colors.transparent,
                                               ),
                                             );
                                           } else {
@@ -393,12 +396,10 @@ class _StudentState extends State<Student> {
                                             content: AwesomeSnackbarContent(
                                               title: "Alert",
                                               message:
-                                              "Vous n'appartenez pas à cette filière.",
-                                              contentType:
-                                              ContentType.failure,
+                                                  "Vous n'appartenez pas à cette filière.",
+                                              contentType: ContentType.failure,
                                             ),
-                                            backgroundColor: Colors
-                                                .transparent,
+                                            backgroundColor: Colors.transparent,
                                           ),
                                         );
                                       }

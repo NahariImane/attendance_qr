@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Container(
               width: MediaQuery.of(context).size.width,
+              color: Colors.white,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,8 +58,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Container(
-                      // margin: EdgeInsets.fromLTRB(
-                      //     1 * fem, 0 * fem, 0 * fem, 2 * fem),
                       width: 226.65 * fem,
                       height: 250 * fem,
                       child: ClipRRect(

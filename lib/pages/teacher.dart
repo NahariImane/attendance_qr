@@ -1,21 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:geocode/geocode.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'access_phone_storage.dart';
 import 'header_widget.dart';
 import 'login.dart';
-import 'package:permission_handler/permission_handler.dart' as pm;
 
 class Teacher extends StatefulWidget {
   const Teacher({Key? key}) : super(key: key);
@@ -27,6 +24,7 @@ class Teacher extends StatefulWidget {
 class _TeacherState extends State<Teacher> {
   late Timer _timer;
   String date = "";
+  bool qrExist = false;
 
   // int _counter = 0;
 
@@ -87,7 +85,6 @@ class _TeacherState extends State<Teacher> {
         });
       });
     });
-    print(address);
   }
 
   @override
@@ -297,7 +294,7 @@ class _TeacherState extends State<Teacher> {
                                                 fontWeight: FontWeight.w600),
                                           ),
                                           subtitle: Text(address !=
-                                                      "Throttled! See geocode.xyz/pricing, null, Throttled! See geocode.xyz/pricing"
+                                                  "Throttled! See geocode.xyz/pricing, null, Throttled! See geocode.xyz/pricing"
                                               ? address
                                               : "Erreur! Essayer de vous reconnecter"),
                                         ),
@@ -556,8 +553,7 @@ class _TeacherState extends State<Teacher> {
                       ),
                       validator: (value) {
                         if (selectedDate == null) {
-                          return
-                            'Veuillez sélectionner une date';
+                          return 'Veuillez sélectionner une date';
                         }
                         return null;
                       },
@@ -613,6 +609,7 @@ class _TeacherState extends State<Teacher> {
     );
   }
 
+  // function to generate the qr code and move to it page
   void generateQRCode() {
     Navigator.pushNamed(
       context,
@@ -620,6 +617,7 @@ class _TeacherState extends State<Teacher> {
       arguments: {
         'selectedFiliere': selectedFiliere,
         'selectedNiveau': selectedNiveau,
+        'selectedMatiere': selectedMatiere,
         'currentLocation': currentLocation,
         'address': address,
       },
@@ -632,6 +630,7 @@ class _TeacherState extends State<Teacher> {
     });
   }
 
+  // date picker function
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -653,10 +652,13 @@ class _TeacherState extends State<Teacher> {
     }
   }
 
+  // function to generate the rapport of students with their state (present or absent)
   Future<void> recupererRapport() async {
     etudiantsPresent = [];
     etudiants = [];
     etudiantsAbsents = [];
+    List_etudiants = [];
+    qrExist = false;
 
     if (selectedFiliere != null &&
         selectedNiveau != null &&
@@ -674,7 +676,9 @@ class _TeacherState extends State<Teacher> {
               document.data() as Map<String, dynamic>;
           String name = userData['nom'] as String;
           String prenom = userData['prenom'] as String;
-          String name_prenom = name + ' ' + prenom;
+          name = name[0].toUpperCase() + name.substring(1).toLowerCase();
+          prenom = prenom[0].toUpperCase() + prenom.substring(1).toLowerCase();
+          String name_prenom = '$name $prenom';
           names.add(name_prenom);
         });
         setState(() {
@@ -685,6 +689,7 @@ class _TeacherState extends State<Teacher> {
       });
     }
 
+    // retrieving the present students list from the qrCode collection
     FirebaseFirestore.instance
         .collection('qrcode')
         .where('date', isEqualTo: formattedDate)
@@ -697,8 +702,10 @@ class _TeacherState extends State<Teacher> {
       querySnapshot.docs.forEach((doc) {
         List<String> students = List<String>.from(doc['students']);
         etudiantsPresent.addAll(students);
+        qrExist = true;
       });
 
+      // checking for the absent students by comparing the present list and the whole class list
       etudiantsAbsents = List_etudiants.where(
           (etudiant) => !etudiantsPresent.contains(etudiant)).toList();
 
@@ -706,41 +713,54 @@ class _TeacherState extends State<Teacher> {
       etudiants = etudiantsPresent + etudiantsAbsents;
       etudiants
           .sort((a, b) => b.compareTo(a)); // Sort the list in descending order
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Liste des étudiants'),
-            content: Container(
-              width: double.maxFinite,
-              child: ListView.builder(
-                itemCount: etudiants.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String etudiant = etudiants[index];
-                  bool estPresent = etudiantsPresent.contains(etudiant);
-                  return ListTile(
-                    title: Text(etudiant),
-                    trailing: Text(
-                      estPresent ? 'Présent' : 'Absent',
-                      style: TextStyle(
-                        color: estPresent ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  );
-                  //  return Text(List_etudiants[index]);
-                },
+      if (qrExist) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Liste des étudiants'),
+              content: Container(
+                width: double.maxFinite,
+                child: ListView.builder(
+                    itemCount: etudiants.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      String etudiant = etudiants[index];
+                      bool estPresent = etudiantsPresent.contains(etudiant);
+
+                      return ListTile(
+                        title: Text(etudiant),
+                        trailing: Text(
+                          estPresent ? 'Présent' : 'Absent',
+                          style: TextStyle(
+                            color: estPresent ? Colors.green : Colors.red,
+                          ),
+                        ),
+                      );
+                    }),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Fermer'),
+                ),
+                TextButton(onPressed: createPdf, child: Text('Télécharger'))
+              ],
+            );
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: AwesomeSnackbarContent(
+              title: "Alert",
+              message: "Liste introuvable, vérifiez les informations entrées.",
+              contentType: ContentType.warning,
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Fermer'),
-              ),
-              TextButton(onPressed: createPdf, child: Text('Télécharger'))
-            ],
-          );
-        },
-      );
+            backgroundColor:
+                Colors.transparent, // Set the background color here
+          ),
+        );
+      }
     }).catchError((error) {
       print('Erreur lors de la récupération des QR codes : $error');
     });
@@ -782,16 +802,19 @@ class _TeacherState extends State<Teacher> {
                       ),
                       pw.TextSpan(text: formattedDate),
                       pw.TextSpan(
-                          text: "\nProfesseur: ",
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.TextSpan(text: emailTeacher),
+                        text: "\nProfesseur: ",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.TextSpan(text: teacherName),
                       pw.TextSpan(
-                          text: "\nFilière: ",
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        text: "\nFilière: ",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
                       pw.TextSpan(text: "$selectedFiliere $selectedNiveau"),
                       pw.TextSpan(
-                          text: "\nMatière: ",
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        text: "\nMatière: ",
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
                       pw.TextSpan(text: selectedMatiere),
                     ],
                   ),
@@ -888,9 +911,6 @@ class _TeacherState extends State<Teacher> {
         ),
       );
     }
-    // if (isOk) {
-    //   debugPrint('File successfully created.');
-    // }
     Navigator.pop(context);
   }
 }

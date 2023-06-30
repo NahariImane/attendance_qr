@@ -7,25 +7,22 @@ import 'package:pfa_gestion_absence_qrcode/pages/admin/ajouterFiliere.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/admin/ajouterMatiere.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/admin/ajouterProfesseur.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/home.dart';
-import 'package:pfa_gestion_absence_qrcode/pages/rapport.dart';
+
 import 'package:pfa_gestion_absence_qrcode/pages/scanqr.dart';
 import 'package:pfa_gestion_absence_qrcode/pages/teacher.dart';
 
-
 Future<void> main() async {
- // configureUrl();
+  // configureUrl();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: "AIzaSyCJq0OkP4XibUfH6ufzSqgmINdAXiL2Pbw",
-        appId: "1:614026879471:android:4d5d5f8ec1a94818b9561a",
-        messagingSenderId: "614026879471",
-        projectId: "absence-qr",)
-  );
-    runApp(MyApp());
-
+    apiKey: "AIzaSyCJq0OkP4XibUfH6ufzSqgmINdAXiL2Pbw",
+    appId: "1:614026879471:android:4d5d5f8ec1a94818b9561a",
+    messagingSenderId: "614026879471",
+    projectId: "absence-qr",
+  ));
+  runApp(MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   @override
@@ -53,7 +50,6 @@ class _MyAppState extends State<MyApp> {
         '/matiere': (context) => const Matiere(),
         '/etudiant': (context) => Etudiant(),
         '/professeur': (context) => const Professeur(),
-        '/rapport': (context) => const Rapport(),
       },
     );
   }

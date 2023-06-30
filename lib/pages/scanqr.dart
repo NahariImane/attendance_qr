@@ -17,6 +17,7 @@ class _CreateScreenState extends State<CreateScreen> {
   String documentId = '';
   String selectedFiliere = '';
   String selectedNiveau = '';
+  String selectedMatiere = '';
   String emailprof = '';
 
   LocationData? currentLocation;
@@ -46,6 +47,7 @@ class _CreateScreenState extends State<CreateScreen> {
       'date': date,
       'filiere': selectedFiliere,
       'niveau': selectedNiveau,
+      'matiere': selectedMatiere,
       'prof': emailprof,
       'location': address,
       'students': students,
@@ -61,6 +63,7 @@ class _CreateScreenState extends State<CreateScreen> {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     selectedFiliere = args?['selectedFiliere'] ?? ''; // Assign the value to the class variable
     selectedNiveau = args?['selectedNiveau'] ?? ''; // Assign the value to the class variable
+    selectedMatiere = args?['selectedMatiere'] ?? '';
     currentLocation =  args?['currentLocation'] ?? LocationData;
     address = args?['address']?? '';
 

@@ -28,6 +28,7 @@ class home extends StatelessWidget {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       margin: EdgeInsets.fromLTRB(1.65*fem, 10*fem, 0*fem, 49*fem),
@@ -47,7 +48,7 @@ class home extends StatelessWidget {
                       width: double.infinity,
                       height: 33*fem,
                       child: Text(
-                        'QrAttendance',
+                        'AbScan',
                         style: SafeGoogleFont (
                           'Nunito',
                           fontSize: 30*ffem,
@@ -66,12 +67,12 @@ class home extends StatelessWidget {
                       endIndent: 5,
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(0*fem, 30*fem, 14*fem, 0*fem),
+                      margin: EdgeInsets.fromLTRB(0*fem, 25*fem, 14*fem, 0*fem),
                       constraints: BoxConstraints (
                         maxWidth: 281*fem,
                       ),
                       child: Text(
-                        'Application de détection des absences\nen utilisant un code qr.',
+                        'Application de détection des absences des étudiant en utilisant un code QR.',
                         style: SafeGoogleFont (
                           'Nunito',
                           fontSize: 14*ffem,
