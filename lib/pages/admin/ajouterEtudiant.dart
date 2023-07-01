@@ -90,7 +90,7 @@ class _EtudiantState extends State<Etudiant>{
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-            'Ajouter Filière',
+            'Ajouter Etudiant',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         flexibleSpace: Container(
