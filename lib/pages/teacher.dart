@@ -647,7 +647,7 @@ class _TeacherState extends State<Teacher> {
       print(selectedDateShort);
 
       // Format the selected date as a string
-      DateFormat dateFormatter = DateFormat('dd/M/yyyy');
+      DateFormat dateFormatter = DateFormat('dd/MM/yyyy');
       formattedDate = dateFormatter.format(selectedDate!);
     }
   }
