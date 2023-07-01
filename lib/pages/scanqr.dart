@@ -28,6 +28,8 @@ class _CreateScreenState extends State<CreateScreen> {
   void initState() {
     super.initState();
     date = '${time.day}/${time.month}/${time.year}';
+    DateFormat dateFormatter = DateFormat('dd/MM/yyyy');
+    date= dateFormatter.format(time);
     col = FirebaseFirestore.instance.collection('qrcode');
   }
 
