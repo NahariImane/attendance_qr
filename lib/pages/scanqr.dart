@@ -62,7 +62,7 @@ class _CreateScreenState extends State<CreateScreen> {
 
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     selectedFiliere = args?['selectedFiliere'] ?? ''; // Assign the value to the class variable
-    selectedNiveau = args?['selectedNiveau'] ?? ''; // Assign the value to the class variable
+    selectedNiveau = args?['selectedNiveau'] ?? ''; 
     selectedMatiere = args?['selectedMatiere'] ?? '';
     currentLocation =  args?['currentLocation'] ?? LocationData;
     address = args?['address']?? '';
