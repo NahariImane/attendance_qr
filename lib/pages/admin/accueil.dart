@@ -110,7 +110,7 @@ class _AccueilState extends State<Accueil> {
                         ),
                       ),
 //*************************************************************************************************
-                      SizedBox(height: 70,),
+                      SizedBox(height: 40,),
                       ConfirmationSlider(
                         height: 55,
                         width: 300,
@@ -130,8 +130,8 @@ class _AccueilState extends State<Accueil> {
                         height: 55,
                         width: 300,
                         backgroundColor: Color(0xFFF5F5F5),
-                        foregroundColor: Color(0XFF136D7F),
-                        iconColor: Color(0xff136D7F),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
                         text: ' Ajouter matière',
                         textStyle: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -145,8 +145,8 @@ class _AccueilState extends State<Accueil> {
                         height: 55,
                         width: 300,
                         backgroundColor: Color(0xFFF5F5F5),
-                        foregroundColor: Color(0XFF136D7F),
-                        iconColor: Color(0xff136D7F),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
                         text: ' Ajouter étudiant',
                         textStyle: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -160,8 +160,8 @@ class _AccueilState extends State<Accueil> {
                         height: 55,
                         width: 300,
                         backgroundColor: Color(0xFFF5F5F5),
-                        foregroundColor: Color(0XFF136D7F),
-                        iconColor: Color(0xff136D7F),
+                        foregroundColor: Color(0XFF009688),
+                        iconColor: Color(0xff3398F6),
                         text: ' Ajouter professeur',
                         textStyle: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -172,6 +172,86 @@ class _AccueilState extends State<Accueil> {
                       )
 
 //=================================================================================================
+                      //const SizedBox(height: 10,),
+                      /*Column(
+                        children: [
+                          SizedBox(height: 60.0),
+
+                          const Text(
+                            'Ajouter',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          const SizedBox(height: 60.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/filiere');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Filiere'),
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 100,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/matiere');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Matiere'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 60.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/professeur');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Professeur'),
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/registration');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.teal[300], // Background color
+                                  ),
+                                  child: Text('Etudiant'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )*/
+
+
                     ],
                   ),
                 ],

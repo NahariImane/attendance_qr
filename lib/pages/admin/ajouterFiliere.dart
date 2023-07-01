@@ -57,7 +57,7 @@ class _FiliereState extends State<Filiere> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-            'Ajouter Filière',
+            'Ajouter Filiére',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         flexibleSpace: Container(
